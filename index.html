@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--    ///map-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+          integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <style>
+        video {
+            transform-origin: center center;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            overflow: hidden;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        nav {
+            position: relative;
+            z-index: 2;
+        }
+
+        .navbar {
+            background: none;
+            overflow: hidden;
+        }
+
+        img {
+            fill: none;
+        }
+
+        h2 {
+            color: yellow;
+            font-size: 20px;
+
+        }
+        .select:not(.is-multiple):not(.is-loading):hover::after {
+            transform: rotate(135deg);
+            transition: all .2s ease-in-out;
+            border-color: #363636;
+        }
+    </style>
+</head>
+<body>
+<video autoplay muted loop src="background.mp4"></video>
+<form id="formWeather">
+    <input id="lat" class="input is-primary is-hovered is-medium mb-3 is-hovered" style="width: 30%" type="text"
+           placeholder="Please enter latitude">
+    <input id="lon" class="input is-primary is-hovered is-medium mb-3 is-hovered" style="width: 30%" type="text"
+           placeholder="Please enter longitude">
+    <button class="button is-primary is-medium openWeatherLatLon">Success</button>
+    <input id="nameOpenWeatherCity" class="input is-primary is-hovered is-medium mb-3 is-hovered" style="width: 80%"
+           type="text" placeholder="Please enter name city to know the weather Open Weather ">
+    <button class="button is-primary is-medium openWeather">Success</button>
+    <input id="nameWeatherStackCity" class="input is-primary is-hovered is-medium mb-3 is-hovered" style="width: 80%"
+           type="text" placeholder="Please enter name to know the weather cityWeather Stack ">
+    <button class="button is-primary  is-medium weatherStack">Success</button>
+    <input id="nameWeatherCity" class="input is-primary is-hovered is-medium mb-3 is-hovered" style="width: 80%"
+           type="text" placeholder="Please enter name city to know the weather Weather ">
+    <button class="button is-primary  is-medium weather">Success</button>
+
+    <textarea class="textareaOpenWeatherCity  is-small is-focused mb-3" style="width: 30%; font-size: 28px;" hidden
+              placeholder="You weather result"></textarea>
+    <textarea class="weatherStackWeatherCity is-small is-focused mb-3" style="width: 30%; font-size: 28px;" hidden
+              placeholder="You weather result"></textarea>
+    <textarea class="weatherCity is-small is-focused mb-3" style="width:30%; font-size: 28px;" hidden
+              placeholder="You weather result"></textarea>
+</form>
+<h2>Select city for example Roma</h2>
+<div class="control has-icons-left">
+    <div class="select is-large">
+        <select class="selectFilter">
+            <option selected>Roma</option>
+            <option>Milano</option>
+            <option>Napoli</option>
+            <option>Torino</option>
+            <option>Palermo</option>
+            <option>Genova</option>
+            <option>Bologna</option>
+            <option>Firenze</option>
+            <option>Bari</option>
+            <option>Catania</option>
+            <option>Venezia</option>
+            <option>Verona</option>
+            <option>Messina</option>
+            <option>Padova</option>
+            <option>Trieste</option>
+        </select>
+    </div>
+    <span class="icon is-large is-left">
+    <i class="fas fa-globe"></i>
+  </span>
+</div>
+<h1 style="text-transform: uppercase; color: aqua">Please click on the map and then on the squirrel again.</h1>
+<div id="map" style="width: 100%; height: 400px;"></div>
+
+<script>
+    const map = L.map('map').setView([50.4501, 30.5234], 10);
+
+    const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    // const popup = L.popup();
+    const LeafIcon = L.Icon.extend({
+        options: {
+            iconSize: [38, 95],
+            iconAnchor: [22, 94],
+            popupAnchor: [-3, -76]
+        },
+    });
+    const squirrel = new LeafIcon({iconUrl: 'squirrel.jpg'});
+
+    async function onMapClick(e) {
+        const marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: squirrel}).bindPopup("You clicked the map at " + e.latlng.toString() + "temperature " + await getWeatherLatLon(e.latlng.lat, e.latlng.lng)).addTo(map);
+    }
+
+    async function getWeatherLatLon(lat, lon) {
+        let temp = '';
+        const api = "f9db622d38b4c2f2686d22ca788d6573";
+        await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api}`)
+            .then((response) => response.json())
+            .then((info) => {
+                console.log(info.main.temp);
+                temp = info.main.temp;
+            });
+        return temp;
+    }
+
+    map.on('click', onMapClick);
+</script>
+<script src="main.js"></script>
+</body>
+</html>
