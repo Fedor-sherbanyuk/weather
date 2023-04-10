@@ -39,7 +39,7 @@ async function getOpenWeatherMap(event) {
     } else if (event.submitter.closest('.weatherStack')) {
 
         const nameWeatherStackCity = data.nameWeatherStackCity.value;
-        await fetch(`https://api.weatherstack.com/current?access_key=${weatherStackApi}&query=${nameWeatherStackCity}`)
+        await fetch(`http://api.weatherstack.com/current?access_key=${weatherStackApi}&query=${nameWeatherStackCity}`)
             .then((response) => response.json())
             .then((info) => {
                 console.log(info);
