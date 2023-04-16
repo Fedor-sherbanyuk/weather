@@ -122,14 +122,14 @@
     });
     const squirrel = new LeafIcon({iconUrl: 'squirrel.jpg'});
 
-    async function onMapClick(e) {
-        const marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: squirrel}).bindPopup("You clicked the map at " + e.latlng.toString() + "temperature " + await getWeatherLatLon(e.latlng.lat, e.latlng.lng)).addTo(map);
+    function onMapClick(e) {
+        const marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: squirrel}).bindPopup("You clicked the map at " + e.latlng.toString() + "temperature " +  getWeatherLatLon(e.latlng.lat, e.latlng.lng)).addTo(map);
     }
 
-    async function getWeatherLatLon(lat, lon) {
+    function getWeatherLatLon(lat, lon) {
         let temp = '';
         const api = "f9db622d38b4c2f2686d22ca788d6573";
-        await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api}`)
+         fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api}`)
             .then((response) => response.json())
             .then((info) => {
                 console.log(info.main.temp);
@@ -140,6 +140,6 @@
 
     map.on('click', onMapClick);
 </script>
-<script src="main.js"></script>
+<script src="index.js"></script>
 </body>
 </html>

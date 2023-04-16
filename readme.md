@@ -1,0 +1,6 @@
+# weather
+
+run:
+```
+npx weather
+```
